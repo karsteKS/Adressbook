@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>---Testukai---</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+        <script>function save() {
+                let p = {
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    birthDate: $("#birthDate").val(),
+                    salary: $("#salary").val()
+                };
+                $.ajax({
+                    url: "http://localhost:8080/addressbook/rest/person/",
+                    contentType: "application/json",
+                    method: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(p),
+                    error: function (xhr, statusText, errorThrown) {
+                        alert("Failed to get data from Server");
+                    },
+                    success: function (data, statusText, xhr) {
+                        console.log(data);
+                    }
+                });
+            }
+        </script>
+        <script>function put() {
+                let p = {
+                    id: parseInt($("#id").val()),
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    birthDate: $("#birthDate").val(),
+                    salary: $("#salary").val()
+                };
+                $.ajax({
+                    url: "http://localhost:8080/addressbook/rest/person/",
+                    contentType: "application/json",
+                    method: "PUT",
+                    dataType: "json",
+                    data: JSON.stringify(p),
+                    error: function (xhr, statusText, errorThrown) {
+                        alert("Failed to get data from Server");
+                    },
+                    success: function (data, statusText, xhr) {
+                        console.log(data);
+                    }
+                });
+        }
+        </script>
+    </head>
+    <body>
+        <input name="id" id ="id"value="id">
+        <input name="firstName" id ="firstName" value="Jonas">
+        <input name="lastName" id ="lastName"value="Sonas">
+        <input name="birthDate" id ="birthDate"value="1990-08-08">
+        <input name="salary" id ="salary"value="9999.99">
+        <button onclick="save();">Save</button>
+        <button onclick="put();">put</button>
+
+    </body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>JavaScript style in one DIV</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    </head>
+
+    <body onload="load();">
+        <div id="rez"></div> 
+
+        <script>
+            function load() {
+                $.ajax({
+                    url: "http://localhost:8080/addressbook/rest/person/",
+                    contentType: "application/json",
+                    method: "GET",
+                    error: function (xhr, statusText, errorThrown) {
+                        alert("Failed to get data from Server");
+                    },
+                    success: generatePersonList
+                });
+            }
+
+            function generatePersonForm() {
+            }
+
+
+            function deletePerson(id) {
+                $.ajax({
+                    url: "http://localhost:8080/addressbook/rest/person/" + id,
+                    method: "delete",
+                    error: function () {
+                        alert("Failed to delete Person");
+                    },
+                    success: load
+                });
+            }
+
+            function put() {
+                let p = {
+                    id: parseInt($("#id").val()),
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    salary: $("#salary").val()
+                };
+                $.ajax({
+                    url: "http://localhost:8080/addressbook/rest/person/",
+                    contentType: "application/json",
+                    method: "PUT",
+                    dataType: "json",
+                    data: JSON.stringify(p),
+                    error: function (xhr, statusText, errorThrown) {
+                        alert("Failed to get data from Server");
+                    },
+                    success: function (data, statusText, xhr) {
+                        console.log(data);
+                    }
+                });
+            }
+            function editPerson() {
+                document.getElementById("irasymo").style.display = "block";
+            }
+
+            function uzdaryti() {
+                document.getElementById("irasymo").style.display = "none";
+            }
+
+            function generatePersonList(data) {
+                let rez = $("#rez");
+                rez.empty();
+                let bCreate = $("<button>Create</button>");
+                bCreate.click(editPerson);
+                rez.append(bCreate);
+                let bRefresh = $("<button>Refresh</button>");
+                bRefresh.click(load);
+                rez.append(bRefresh);
+                let l = $("<ul>");
+                for (let i = 0; i < data.length; i++) {
+                    let li = $("<li>");
+                    let d = $("<span>");
+                    d.text(" Name: " + data[i].firstName + " ");
+                    li.append(d);
+                    d = $("<span>");
+                    d.text("Surname: " + data[i].lastName + " ");
+                    li.append(d);
+                    l.append(li);
+                    d = $("<span>");
+                    d.text("Salary: " + data[i].salary + " EUR ");
+                    li.append(d);
+                    d = $("<span>");
+                    d.text("Birthdate:" + data[i].birthDate + " ");
+                    li.append(d);
+                    let bEdit = $("<button>Edit</button>");
+                   bEdit.click(function () {
+                        editPerson(data[i].id);
+                    });
+                    li.append(bEdit);
+                    let bDelete = $("<button>Delete</button>");
+                    bDelete.attr("personId", data[i].id);
+                    bDelete.click(event =>{
+                        let personId = event.target.getAttribute("personId");
+                        if(personId || personId === 0){
+                            personId = parseInt(personId);
+                            if(!isNaN(personId)){
+                                deletePerson(personId);
+                            }
+                        }
+                    });
+                    li.append(bDelete);
+                   }
+                rez.append(l);
+            }
+        </script>
+
+        <div style="display: none" id="irasymo"  >
+            <input name="id" id ="id"value="id">
+            <input name="firstName" id ="firstName" value="firstas">
+            <input name="lastName" id ="lastName"value="lastas">
+            <input name="birthDate" id ="birthDate"value="1999-01-20">
+            <input name="salary" id ="salary"value="654.32">
+            <button onclick="put();">Pakeisti</button>
+            <button onclick="uzdaryti()">paslepti</button>
+        </div>
+    </body>
+</html>
